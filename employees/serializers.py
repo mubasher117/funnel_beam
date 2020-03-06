@@ -3,8 +3,6 @@ from rest_framework import serializers
 from django.core import serializers as sz
 import json
 from django.db import connection
-
-
 class ClientSerializer(serializers.ModelSerializer):
     projects = serializers.StringRelatedField(many = True)
     clients = serializers.SerializerMethodField()

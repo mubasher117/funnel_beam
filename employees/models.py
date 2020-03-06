@@ -1,4 +1,6 @@
 from django.db import models
+from rest_framework.authtoken.models import Token
+
 
 
 class Client(models.Model):
@@ -20,3 +22,4 @@ class Employee(models.Model):
 class ProjectEmployee(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+

@@ -2,10 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import *
 from .models import *
+from rest_framework.permissions import IsAuthenticated
 import json
-
-
 class ClientsList(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         clients_data = request.query_params
         client_id = clients_data.get('client_id')
@@ -54,6 +54,7 @@ class ClientsList(APIView):
 
 
 class ProjectList(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         project_data = request.query_params
         project_id = project_data.get('project_id')
@@ -108,6 +109,7 @@ class ProjectList(APIView):
 
 
 class EmployeeList(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         employee_data = request.query_params
         employee_id = employee_data.get('employee_id')
@@ -147,6 +149,7 @@ class EmployeeList(APIView):
 
 
 class ProjectEmployeeList(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         project_employee_data = request.query_params
         project_id = project_employee_data.get('project_id')
