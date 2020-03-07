@@ -4,41 +4,43 @@ from .serializers import *
 from .models import *
 from rest_framework.permissions import IsAuthenticated
 import json
+
+
 class ClientsList(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
+        "Returns all clients or a specific client based on parameters provided"
         clients_data = request.query_params
         client_id = clients_data.get('client_id')
         client_profile = None
         if client_id == None:
             client_profile = Client.objects.all()
-            print(client_profile.query)
         else:
             client_profile = Client.objects.filter(id=client_id)
         serializer = ClientSerializer(client_profile, many=True)
-        """
-        names = []
-        for client in client_profile:
-            names.append(client.name)
-        return Response(json.dumps(names))
-        """
         return Response(serializer.data)
 
     def post(self, request):
+        #Returns response on the basis of information provided
         client_data = request.data
         name = client_data.get('name')
         Client.objects.create(name=name)
         return Response(200)
+
     def delete(self, request):
+        "Deletes a specific client"
         client_data = request.data
         client_id = client_data.get('client_id')
         try:
             client = Client.objects.get(id=client_id)
         except:
             return Response("No client with this id available")
-        client.delete()        
+        client.delete()
         return Response(200)
+
     def put(self, request):
+        "Modifies the client"
         client_data = request.data
         client_id = client_data.get('client_id')
         client_new_name = client_data.get('new_name')
@@ -50,12 +52,12 @@ class ClientsList(APIView):
         client.save()
         return Response(200)
 
-        
-
 
 class ProjectList(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
+        "Returns all projects or a specific project" 
         project_data = request.query_params
         project_id = project_data.get('project_id')
         project_profile = None
@@ -76,6 +78,7 @@ class ProjectList(APIView):
             return Response("No client with this id available")
         Project.objects.create(title=title, owner=owner)
         return Response(200)
+
     def delete(self, request):
         project_data = request.data
         project_id = project_data.get('project_id')
@@ -83,8 +86,9 @@ class ProjectList(APIView):
             project = Project.objects.get(id=project_id)
         except:
             return Response("No project with this id available")
-        project.delete()        
+        project.delete()
         return Response(200)
+
     def put(self, request):
         project_data = request.data
         project_id = project_data.get('project_id')
@@ -94,8 +98,10 @@ class ProjectList(APIView):
             project = Project.objects.get(id=project_id)
         except:
             return Response("No project with this id available")
+        #Conditions for provided parameters
         if project_new_title != None:
             project.title = project_new_title
+        #Foreign Key checks
         if project_new_owner != None:
             try:
                 client = Client.objects.get(id=project_new_owner)
@@ -104,12 +110,11 @@ class ProjectList(APIView):
                 return Response("No client with this id available")
         project.save()
         return Response(200)
-    
-
 
 
 class EmployeeList(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         employee_data = request.query_params
         employee_id = employee_data.get('employee_id')
@@ -126,6 +131,7 @@ class EmployeeList(APIView):
         name = employe_data.get('name')
         Employee.objects.create(name=name)
         return Response(200)
+
     def delete(self, request):
         employee_data = request.data
         employee_id = employee_data.get('employee_id')
@@ -133,8 +139,9 @@ class EmployeeList(APIView):
             employee = Employee.objects.get(id=employee_id)
         except:
             return Response("No employee with this id available")
-        employee.delete()        
+        employee.delete()
         return Response(200)
+
     def put(self, request):
         employee_data = request.data
         employee_id = employee_data.get('employee_id')
@@ -150,11 +157,13 @@ class EmployeeList(APIView):
 
 class ProjectEmployeeList(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         project_employee_data = request.query_params
         project_id = project_employee_data.get('project_id')
         employee_id = project_employee_data.get('employee_id')
         project_employee_profile = None
+        #Conditions for provided parameters
         if project_id == None and employee_id == None:
             project_employee_profile = ProjectEmployee.objects.all()
         elif project_id == None:
@@ -174,6 +183,7 @@ class ProjectEmployeeList(APIView):
         request_data = request.data
         project_id = request_data.get('project_id')
         employee_id = request_data.get('employee_id')
+        #Foreign Key checks
         try:
             project = Project.objects.get(id=project_id)
         except:
@@ -181,7 +191,7 @@ class ProjectEmployeeList(APIView):
         try:
             employee = Employee.objects.get(id=employee_id)
         except:
-            Response("No employee available with this id")
+            return Response("No employee available with this id")
         ProjectEmployee.objects.create(project=project, employee=employee)
         return Response(200)
 
@@ -192,8 +202,9 @@ class ProjectEmployeeList(APIView):
         try:
             project = Project.objects.get(id=project_id)
             employee = Employee.objects.get(id=employee_id)
-            project_employee = ProjectEmployee.objects.get(project = project, employee = employee)
+            project_employee = ProjectEmployee.objects.get(
+                project=project, employee=employee)
         except:
             return Response("No employee or project with this id available")
-        project_employee.delete()        
+        project_employee.delete()
         return Response(200)

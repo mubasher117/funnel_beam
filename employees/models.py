@@ -2,9 +2,9 @@ from django.db import models
 from rest_framework.authtoken.models import Token
 
 
-
 class Client(models.Model):
     name = models.CharField(max_length=100)
+
 
 class Project(models.Model):
     title = models.CharField(max_length=100)
@@ -22,4 +22,3 @@ class Employee(models.Model):
 class ProjectEmployee(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-
